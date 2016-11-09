@@ -120,16 +120,6 @@ def make_protein_record(nuc_record):
 
 
 def alignment_screen(protein_alignment, protein_seqs, dna_seqs, cutoff):
-    '''This function is used to remove columns from an alignment where many of the sequences in an alignment have gaps.
-    You have to provide a protein alignment, the protein seqs that the alignment was generated from, the dna sequences
-    that the protein sequences were generated from, and the cutoff.  The cutoff is the proportion of gaps that is
-    acceptable and should always be less than 1 (ie if you want to remove columns where greater than 90% of the sequences
-    have a gap you should provide '0.90' as the cutoff.)  All of these inputs should be Biopython objects.  The
-    protein_alignment should be a MultipleSeqAlignment object, the others should be lists of SeqRecord objects.  This 
-    function identifies which residues in the alignment need to be removed, then removes these residues from the unaligned
-    protein sequences and also the corresponding nucleotides from the DNA sequences.  It returns unaligned protein sequences
-    and DNA sequences with the residues and nucleotides removed that occupied the columns in the alignment that had more gaps
-    than the cutof'''
     aln = protein_alignment
     alignment_length = (len(aln[0]))
     alignment_iterator = range(0, alignment_length)
@@ -241,17 +231,7 @@ def find_hit_regions(primer, alignment): #this one is for all the sequences in t
      is likely, output a spreadsheet that tells you what sequences are likely to misprime, how big the amplicon
      for the mispriming would be...  But this mispriming would only be for these particular sequences that you are
      tyring to amplify, A much more liekly source of mispriming would just be other random genomic DNA.  A metagenome
-     might be a good thing to run this, but that would really take a long time.....
-     
-     Usage:
-         this function takes a primer which should be a Biopython Seq object, these can have degenerate bases using standard
-         IUPAC nomenclature.
-         The other input is an alignment object which should be a MultipleSeqAlignment Biopython object.  These are the
-         sequences that this function will scan to find the best binding site for the primer you input.  The best binding 
-         site is determined by finding the mode of the coordinates with the fewest mismatches, I suspect this function will
-         break if there are two equally abundant optimal binding sites.  
-         This function returns two indexes. The first is the starting index of the optimal binding site in the DNA alignment,
-         the second is the ending index of the optimal binding site in the DNA alignment'''
+     might be a good thing to run this, but that would really take a long time.....'''
 
     alignment_len = len(alignment[0])
     primer_length = len(primer)
@@ -304,11 +284,7 @@ def find_hit_regions(primer, alignment): #this one is for all the sequences in t
 def primer_coverage(FWDprimer, REVprimer, FWDregion, REVregion):
     """ Returns a pandas dataframe with the number of mismatches for each primer in their corresponding region.
     It also attempts to pull metadata from the sequences (organism, and gene definition) this works if the sequences
-    are from fungene.  Row names are sequence IDs. 
-    Usage:
-        FWDprimer and REVprimer should be Biopython Seq objects, can have IUPAC degenerate bases
-        FWDregion and REVregion should be regions of a MultipleSeqAlignment object corresponding to the optimal
-        binding region of the FWD and REV primers respectively"""
+    are from fungene.  Row names are sequence IDs. """
     number_mismatches_FWD = {}
     melt_temp_FWD = {}
 
@@ -365,7 +341,7 @@ def primer_coverage(FWDprimer, REVprimer, FWDregion, REVregion):
 
 
 gap_cutoff = 0.95
-dna = SeqIO.parse(argv[1], "fasta")  # I should change this and eventually will, I used this script on 'finalbuts.fasta'
+dna = SeqIO.parse(argv[1], "fasta")
 dna = list(dna)
 print("you input {} DNA sequences".format(len(dna)))
 print("filtering sequences based on length, maxlength = 1600, minlength = 1200...")
